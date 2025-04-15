@@ -1,0 +1,18 @@
+[
+  {
+    "id": 1,
+    "title": "Conf\u00e9rence PHP",
+    "description": "Tout savoir sur PHP en 2025",
+    "date": "2025-05-20",
+    "places_total": 50,
+    "places_booked": 1
+  },
+  {
+    "id": 2,
+    "title": "Atelier Vue.js",
+    "description": "Construire une app dynamique",
+    "date": "2025-05-21",
+    "places_total": 30,
+    "places_booked": 2
+  }
+]
