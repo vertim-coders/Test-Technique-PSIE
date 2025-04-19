@@ -119,11 +119,6 @@ npm run dev
 
 ---
 
-## 📸 Aperçu
-*Screenshots ou vidéo en option ici.*
-
----
-
 ## 📝 Notes
 > Ce projet est fourni à des fins de test technique uniquement. Merci de ne pas plagier ni redistribuer ce contenu.
 
