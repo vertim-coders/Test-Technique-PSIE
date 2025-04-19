@@ -1,65 +1,75 @@
-<script setup>
-import { ref } from 'vue';
-import { Button } from './components/btns'
-import { IconPlus, IconMinus } from './components/icons'
-
-const number = ref(50)
-const randowHexColor = ref([
-  Math.floor(Math.random() * 16777215).toString(16),
-  Math.floor(Math.random() * 16777215).toString(16),
-  Math.floor(Math.random() * 16777215).toString(16),
-  Math.floor(Math.random() * 16777215).toString(16),
-])
-
-const handleIncrease = () => {
-  number.value++;
-  generateRandomHexColor();
-}
-
-const generateRandomHexColor = () => {  
-  randowHexColor.value.shift();
-  randowHexColor.value.push(Math.floor(Math.random() * 16777215).toString(16));
-}
-
-const decrease = () => {
-  if (number.value > 20){
-    number.value--
-    generateRandomHexColor();
-  }
-}
-</script>
-
 <template>
-  <div class="flex justify-center items-center h-[100vh] w-full">
-    <div class="flex flex-col items-center space-y-4">
-      <span
-        class="text-center font-bold p-4 rounded gradient-text"
-        :style="{
-          fontSize: number + 'px',
-          backgroundImage: `linear-gradient(to right, #${randowHexColor[0]}, #${randowHexColor[1]}, #${randowHexColor[2]}, #${randowHexColor[3]})`
-        }"
+  <div class="min-h-screen bg-gray-100 p-4">
+    <div class="max-w-4xl mx-auto space-y-6">
+      <!-- Bouton d'ajout d'événement -->
+      <button 
+        @click="showForm = !showForm" 
+        class="bg-blue-600 text-white font-semibold px-4 py-2 rounded shadow hover:bg-blue-700 transition"
       >
-        {{ number }}
-      </span>
-      <div class="flex space-x-2">
-        <Button :increase="handleIncrease">
-          <IconPlus />
-          <span>Increase</span>
-        </Button>
-        <Button :increase="decrease" :class="`bg-red-500 hover:bg-red-700`">
-          <IconMinus />
-          <span>Decrease</span>
-        </Button>
-      </div>
+        {{ showForm ? 'Annuler' : 'Ajouter un événement' }}
+      </button>
+
+      <!-- Formulaire d'ajout -->
+      <FormulaireEvenement 
+        v-if="showForm" 
+        @evenement-ajoute="handleAjoutEvenement"
+      />
+
+      <!-- Liste des événements -->
+      <EvenementListe 
+        :evenements="evenements"
+        @actualiser="fetchEvenements"
+      />
+
+      <!-- Bouton pour afficher/masquer les réservations -->
+      <button 
+        @click="showReservations = !showReservations" 
+        class="bg-green-600 text-white font-semibold px-4 py-2 rounded shadow hover:bg-green-700 transition"
+      >
+        {{ showReservations ? 'Masquer Réservations' : 'Afficher Réservations' }}
+      </button>
+
+      <!-- Liste des réservations -->
+      <Reservation 
+        v-if="showReservations" 
+        :evenements="evenements" 
+      />
     </div>
   </div>
 </template>
 
-<style scoped>
-.gradient-text {
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-fill-color: transparent;
-}
-</style>
+<script>
+import EvenementListe from './components/EvenementListe.vue';
+import FormulaireEvenement from './components/AjouterEvenement.vue';
+import Reservation from './components/Reservation.vue';
+
+export default {
+  components: {
+    EvenementListe,
+    FormulaireEvenement,
+    Reservation
+  },
+  data() {
+    return {
+      evenements: [],
+      showForm: false,
+      showReservations: false
+    };
+  },
+  methods: {
+    fetchEvenements() {
+      fetch('http://localhost:8080/events')
+        .then(res => res.json())
+        .then(data => this.evenements = data.data)
+        .catch(err => console.error('Erreur lors de la récupération des événements :', err));
+    },
+    handleAjoutEvenement() {
+      this.fetchEvenements();
+      this.showForm = false;
+    }
+  },
+  mounted() {
+    this.fetchEvenements();
+  }
+};
+</script>
