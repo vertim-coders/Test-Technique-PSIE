@@ -114,8 +114,8 @@ npm run dev
 
 ## 🙌 Auteurs
 
-**Nom du candidat** : _<Nom Prénom>_  
-**Branche Git** : `feat/nom_prenom`
+**Nom du candidat** : _Bernado ADIKPETO_  
+**Branche Git** : `feat/Bernado_ADIKPETO`
 
 ---
 
