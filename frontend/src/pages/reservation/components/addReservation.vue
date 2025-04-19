@@ -1,7 +1,7 @@
 <template>
   <div v-if="isOpen" class="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
     <div class="bg-white rounded-lg shadow-lg p-6 w-96">
-      <h2 class="text-xl font-bold mb-4">Ajouter un événement</h2>
+      <h2 class="text-xl font-bold mb-4">Ajouter une réservation</h2>
       <form @submit.prevent="submitForm">
        
         <div class="mb-4">
