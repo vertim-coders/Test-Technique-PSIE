@@ -15,22 +15,12 @@
           />
         </div>
 
+       
         <div class="mb-4">
-          <label for="date" class="block text-sm font-medium text-gray-600">Date</label>
+          <label for="email" class="block text-sm font-medium text-gray-600">Email</label>
           <input
-            id="date"
-            v-model="eventData.date"
-            type="date"
-            class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
-            required
-          />
-        </div>
-
-        <div class="mb-4">
-          <label for="lieu" class="block text-sm font-medium text-gray-600">Lieu</label>
-          <input
-            id="lieu"
-            v-model="eventData.lieu"
+            id="email"
+            v-model="eventData.email"
             type="text"
             class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md"
             required
@@ -59,8 +49,8 @@ const emit = defineEmits(['save', 'cancel']);
 
 const eventData = ref({
   nom: '',
-  lieu: '',
-  date: '',
+  email: '',
+ 
  
 });
 

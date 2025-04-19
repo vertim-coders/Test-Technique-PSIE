@@ -2,7 +2,10 @@
 import { ref } from "vue";
 import { Pencil, Trash, Plus } from "lucide-vue-next";
 import { Button } from "@/components/ui/button";
-import DeleteReservation from "./modal.vue";
+import DeleteReservation from "./deleteReservation.vue";
+import AddReservation from "./addReservation.vue"; 
+import UpdateReservation from "./updateReservation.vue"; 
+
 
 interface Reservation {
   id: number;
@@ -18,7 +21,12 @@ const reservations = ref<Reservation[]>([
 ]);
 
 const isDeleteModalOpen = ref(false);
+const isAddModalOpen = ref(false);
+const isUpdateModalOpen = ref(false);
 const reservationToDelete = ref<Reservation | null>(null);
+const reservationToEdit = ref<Reservation | null>(null);
+const reservationToUpdate = ref<Reservation | null>(null);
+
 
 const openDeleteModal = (reservation: Reservation) => {
   reservationToDelete.value = reservation;
@@ -38,12 +46,36 @@ const cancelDelete = () => {
   isDeleteModalOpen.value = false;
 };
 
-const editReservation = (reservation: Reservation) => {
-  alert(`Édition de la réservation : ${reservation.nom}`);
+const openEditModal = (reservation: Reservation | null) => {
+  reservationToEdit.value = reservation;
+  isAddModalOpen.value = true;
 };
 
-const createReservation = () => {
-  alert("Création d’une nouvelle réservation");
+const openUpdateModal = (reservation: Reservation | null) => {
+  reservationToUpdate.value = reservation;
+  isUpdateModalOpen.value = true;
+};
+
+
+const saveReservation = (reservationData: Reservation) => {
+  if (reservationToEdit.value) {
+    const index = reservations.value.findIndex(r => r.id === reservationToEdit.value?.id);
+    if (index !== -1) {
+      reservations.value[index] = reservationData;
+    }
+  } else {
+    const newId = Math.max(...reservations.value.map(r => r.id), 0) + 1;
+    reservations.value.push({ ...reservationData, id: newId });
+  }
+  isAddModalOpen.value = false;
+};
+
+const cancelEdit = () => {
+  isAddModalOpen.value = false;
+};
+
+const cancelUpdate = () => {
+  isUpdateModalOpen.value = false;
 };
 </script>
 
@@ -51,7 +83,7 @@ const createReservation = () => {
   <div class="p-4">
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-2xl font-bold">Liste des Réservations</h2>
-      <Button @click="createReservation">
+      <Button @click="openEditModal(null)">
         Ajouter une réservation
         <Plus class="ml-2 w-4 h-4" />
       </Button>
@@ -73,7 +105,7 @@ const createReservation = () => {
             <td class="px-4 py-2">{{ reservation.email }}</td>
             <td class="px-4 py-2">{{ reservation.nom }}</td>
             <td class="px-4 py-2 flex gap-2">
-              <button @click="editReservation(reservation)" class="text-blue-600 hover:underline">
+              <button @click="openUpdateModal(reservation)" class="text-blue-600 hover:underline">
                 <Pencil class="h-4 w-4" />
               </button>
               <button @click="openDeleteModal(reservation)" class="text-red-600 hover:underline">
@@ -85,12 +117,25 @@ const createReservation = () => {
       </table>
     </div>
 
-  
     <DeleteReservation
       v-model:isOpen="isDeleteModalOpen"
       :reservation="reservationToDelete"
       @delete="deleteReservation"
       @cancel="cancelDelete"
+    />
+
+    <AddReservation
+      v-model:isOpen="isAddModalOpen"
+      :reservation="reservationToEdit"
+      @save="saveReservation"
+      @cancel="cancelEdit"
+    />
+
+     <UpdateReservation
+      v-model:isOpen="isUpdateModalOpen"
+      :reservation="reservationToUpdate"
+      @save="saveReservation"
+      @cancel="cancelUpdate"
     />
   </div>
 </template>

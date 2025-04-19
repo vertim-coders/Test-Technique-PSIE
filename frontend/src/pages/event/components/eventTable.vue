@@ -2,7 +2,9 @@
 import { ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import { Pencil, Trash, Plus } from 'lucide-vue-next';
-import DeleteEvent from './modal.vue';
+import DeleteEvent from './deleteEvent.vue';
+import AddEvent from './addEvent.vue'; 
+import UpdateEvent from './updateEvent.vue'; 
 
 interface Event {
   id: number;
@@ -33,7 +35,11 @@ const events = ref<Event[]>([
 ]);
 
 const isDeleteModalOpen = ref(false);
+const isUpdateModalOpen = ref(false);
+const isAddModalOpen = ref(false); 
+
 const eventToDelete = ref<Event | null>(null);
+const eventToUpdate = ref<Event | null>(null); // ✅ Corrigé ici
 
 const openDeleteModal = (event: Event) => {
   eventToDelete.value = event;
@@ -51,12 +57,37 @@ const cancelDelete = () => {
   isDeleteModalOpen.value = false;
 };
 
-const createEvent = () => {
-  alert("Création d’un nouvel événement");
+const openUpdateModal = (event: Event | null) => {
+  eventToUpdate.value = event;
+  isUpdateModalOpen.value = true;
 };
 
-const editEvent = (event: Event) => {
-  alert("Édition de l’événement : " + event.title);
+const saveEvent = (eventData: Event) => {
+  if (eventToUpdate.value) {
+    const index = events.value.findIndex(event => event.id === eventToUpdate.value?.id);
+    if (index !== -1) {
+      events.value[index] = eventData;
+    }
+  }
+  isUpdateModalOpen.value = false; // ✅ Corrigé ici
+};
+
+const openAddModal = () => {
+  isAddModalOpen.value = true; 
+};
+
+const saveNewEvent = (newEvent: Event) => {
+  newEvent.id = events.value.length + 1; 
+  events.value.push(newEvent); 
+  isAddModalOpen.value = false; 
+};
+
+const cancelAdd = () => {
+  isAddModalOpen.value = false; 
+};
+
+const cancelUpdate = () => {
+  isUpdateModalOpen.value = false;
 };
 </script>
 
@@ -64,7 +95,10 @@ const editEvent = (event: Event) => {
   <div class="p-4">
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-2xl font-bold">Liste des Événements</h2>
-      <Button @click="createEvent">Ajouter événement <Plus class="ml-2" /></Button>
+      <Button @click="openAddModal">
+        Ajouter un événement
+        <Plus />
+      </Button>
     </div>
 
     <div class="overflow-x-auto rounded border border-gray-200 shadow-sm">
@@ -86,7 +120,7 @@ const editEvent = (event: Event) => {
             <td class="px-4 py-2">{{ event.date }}</td>
             <td class="px-4 py-2">{{ event.places_booked }} / {{ event.places_total }}</td>
             <td class="px-4 py-2 flex gap-2">
-              <button @click="editEvent(event)" class="text-blue-600 hover:underline">
+              <button @click="openUpdateModal(event)" class="text-blue-600 hover:underline">
                 <Pencil class="h-4 w-4" />
               </button>
               <button @click="openDeleteModal(event)" class="text-red-600 hover:underline">
@@ -98,12 +132,27 @@ const editEvent = (event: Event) => {
       </table>
     </div>
 
-    <DeleteEvent
-  v-model:isOpen="isDeleteModalOpen"
-  :event="eventToDelete"
-  @delete="deleteEvent"
-  @cancel="cancelDelete"
-/>
+    <!-- Modal d’ajout -->
+    <AddEvent
+      :isOpen="isAddModalOpen"
+      @save="saveNewEvent"
+      @cancel="cancelAdd"
+    />
 
+    <!-- Modal de suppression -->
+    <DeleteEvent
+      v-model:isOpen="isDeleteModalOpen"
+      :event="eventToDelete"
+      @delete="deleteEvent"
+      @cancel="cancelDelete"
+    />
+
+    <!-- Modal de mise à jour -->
+    <UpdateEvent
+      v-model:isOpen="isUpdateModalOpen"
+      :event="eventToUpdate"
+      @save="saveEvent"
+      @cancel="cancelUpdate"
+    />
   </div>
 </template>

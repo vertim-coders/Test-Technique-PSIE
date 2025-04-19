@@ -1,7 +1,7 @@
 <template>
   <div v-if="isOpen" class="fixed inset-0 flex justify-center items-center bg-gray-500 bg-opacity-50">
     <div class="bg-white rounded-lg shadow-lg p-6 w-96">
-      <h2 class="text-xl font-bold mb-4">Ajouter un événement</h2>
+      <h2 class="text-xl font-bold mb-4">Modifier un événement</h2>
       <form @submit.prevent="submitForm">
        
         <div class="mb-4">
@@ -39,7 +39,7 @@
 
         <div class="flex justify-end gap-2">
           <button @click="cancel" type="button" class="px-4 py-2 bg-gray-300 text-white rounded">Annuler</button>
-          <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Ajouter</button>
+          <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded">Modifier</button>
         </div>
       </form>
     </div>
