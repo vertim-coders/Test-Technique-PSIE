@@ -13,7 +13,7 @@ import {
 
 const props = defineProps<{
   isOpen: boolean
-  event: {
+  reservation: {
     title: string
   } | null
 }>()
@@ -34,10 +34,10 @@ watch(open, (val) => {
   <Dialog v-model:open="open">
     <DialogContent class="sm:max-w-md">
       <DialogHeader>
-        <DialogTitle>Suppression de l’évènement</DialogTitle>
+        <DialogTitle>Suppression de la réservation</DialogTitle>
         <DialogDescription>
           Êtes-vous sûr de vouloir supprimer
-          <strong> {{ event?.title }} </strong> ?
+          <strong> {{ reservation?.title }} </strong> ?
         </DialogDescription>
       </DialogHeader>
 

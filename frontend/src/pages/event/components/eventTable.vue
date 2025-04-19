@@ -2,7 +2,7 @@
 import { ref } from 'vue';
 import { Button } from '@/components/ui/button';
 import { Pencil, Trash, Plus } from 'lucide-vue-next';
-import DeleteEvent from "./modal.vue";
+import DeleteEvent from './modal.vue';
 
 interface Event {
   id: number;
@@ -32,16 +32,13 @@ const events = ref<Event[]>([
   },
 ]);
 
-
 const isDeleteModalOpen = ref(false);
 const eventToDelete = ref<Event | null>(null);
-
 
 const openDeleteModal = (event: Event) => {
   eventToDelete.value = event;
   isDeleteModalOpen.value = true;
 };
-
 
 const deleteEvent = () => {
   if (eventToDelete.value) {
@@ -51,12 +48,15 @@ const deleteEvent = () => {
 };
 
 const cancelDelete = () => {
-  isDeleteModalOpen.value = false; 
+  isDeleteModalOpen.value = false;
 };
-
 
 const createEvent = () => {
   alert("Création d’un nouvel événement");
+};
+
+const editEvent = (event: Event) => {
+  alert("Édition de l’événement : " + event.title);
 };
 </script>
 
@@ -64,7 +64,7 @@ const createEvent = () => {
   <div class="p-4">
     <div class="flex justify-between items-center mb-4">
       <h2 class="text-2xl font-bold">Liste des Événements</h2>
-      <Button @click="createEvent">Ajouter événement <Plus /></Button>
+      <Button @click="createEvent">Ajouter événement <Plus class="ml-2" /></Button>
     </div>
 
     <div class="overflow-x-auto rounded border border-gray-200 shadow-sm">
@@ -89,11 +89,8 @@ const createEvent = () => {
               <button @click="editEvent(event)" class="text-blue-600 hover:underline">
                 <Pencil class="h-4 w-4" />
               </button>
-              <button
-                @click="openDeleteModal(event)"
-                class="text-red-600 hover:underline"
-              >
-                <Trash />
+              <button @click="openDeleteModal(event)" class="text-red-600 hover:underline">
+                <Trash class="h-4 w-4" />
               </button>
             </td>
           </tr>
@@ -101,12 +98,12 @@ const createEvent = () => {
       </table>
     </div>
 
-   
     <DeleteEvent
-      v-model:isOpen="isDeleteModalOpen"
-      :event="eventToDelete" 
-      @delete="deleteEvent"
-      @cancel="cancelDelete"
-    />
+  v-model:isOpen="isDeleteModalOpen"
+  :event="eventToDelete"
+  @delete="deleteEvent"
+  @cancel="cancelDelete"
+/>
+
   </div>
 </template>
