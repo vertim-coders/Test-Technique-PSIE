@@ -1,20 +1,32 @@
 [
-  {
-    "id": 1,
-    "event_id": 2,
-    "email": "abokajr@vertimcoders.com",
-    "nom": "ABOKA JR"
-  },
-  {
-    "id": 2,
-    "event_id": 1,
-    "email": "abokajr@vertimcoders.com",
-    "nom": "ABOKA JR"
-  },
-  {
-    "id": 3,
-    "event_id": 1,
-    "email": "gohou@vertimcoders.com",
-    "nom": "GOHOU"
-  }
+    {
+        "id": 1,
+        "event_id": 2,
+        "email": "abokajr@vertimcoders.com",
+        "nom": "ABOKA JR"
+    },
+    {
+        "id": 2,
+        "event_id": 1,
+        "email": "abokajr@vertimcoders.com",
+        "nom": "ABOKA JR"
+    },
+    {
+        "id": 3,
+        "event_id": 1,
+        "email": "gohou@vertimcoders.com",
+        "nom": "GOHOU"
+    },
+    {
+        "id": 4,
+        "event_id": 1,
+        "email": "test@psie.com",
+        "nom": "Testeur"
+    },
+    {
+        "id": 5,
+        "event_id": 2,
+        "email": "bernado@pop.com",
+        "nom": "Bernado"
+    }
 ]

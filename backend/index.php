@@ -1,5 +1,8 @@
 <?php
 header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
 
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -51,9 +54,6 @@ switch (true) {
         break;
 
     case matchRoute('/events/:id', $routeParams):
-        if ($method === 'GET') {
-            echo json_encode(["data" => $events[$routeParams['id']]]);
-        }
         if ($method === 'PUT') {
             $body = json_decode(file_get_contents('php://input'), true);
     
@@ -111,7 +111,7 @@ switch (true) {
             }
         }
         break;
-    
+
     case matchRoute('/reservation/:id/email/:email', $routeParams):
         if ($method === 'DELETE') {
             $reservationId = (int)$routeParams['id'];
@@ -198,6 +198,7 @@ switch (true) {
             echo json_encode(["data" => $newReservation]);
         }
         break;
+
     default:
         http_response_code(404);
         echo json_encode(["error" => "Route non trouvée"]);
