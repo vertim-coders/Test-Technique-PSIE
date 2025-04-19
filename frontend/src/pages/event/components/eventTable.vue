@@ -1,7 +1,8 @@
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { Pencil, Trash, Plus } from "lucide-vue-next";
+import { ref } from 'vue';
 import { Button } from '@/components/ui/button';
+import { Pencil, Trash, Plus } from 'lucide-vue-next';
+import DeleteEvent from "./modal.vue";
 
 interface Event {
   id: number;
@@ -19,7 +20,7 @@ const events = ref<Event[]>([
     description: "Tout savoir sur PHP en 2025",
     date: "2025-05-20",
     places_total: 50,
-    places_booked: 1
+    places_booked: 1,
   },
   {
     id: 2,
@@ -27,44 +28,35 @@ const events = ref<Event[]>([
     description: "Construire une app dynamique",
     date: "2025-05-21",
     places_total: 30,
-    places_booked: 2
-  }
+    places_booked: 2,
+  },
 ]);
 
-// Modal ref
-const modalRef = ref(null);
 
-const deleteEvent = (id: number) => {
-  modalRef.value.openModal(
-    "Êtes-vous sûr de vouloir supprimer cet événement ?",
-    () => {
-      events.value = events.value.filter(event => event.id !== id);
-      modalRef.value.closeModal();
-    },
-    "bg-red-500"
-  );
+const isDeleteModalOpen = ref(false);
+const eventToDelete = ref<Event | null>(null);
+
+
+const openDeleteModal = (event: Event) => {
+  eventToDelete.value = event;
+  isDeleteModalOpen.value = true;
 };
 
-const editEvent = (event: Event) => {
-  modalRef.value.openModal(
-    `Modifier l'événement : ${event.title}`,
-    () => {
-      alert(`Édition de l'événement: ${event.title}`);
-      modalRef.value.closeModal();
-    },
-    "bg-blue-500"
-  );
+
+const deleteEvent = () => {
+  if (eventToDelete.value) {
+    events.value = events.value.filter(event => event.id !== eventToDelete.value?.id);
+  }
+  isDeleteModalOpen.value = false;
 };
+
+const cancelDelete = () => {
+  isDeleteModalOpen.value = false; 
+};
+
 
 const createEvent = () => {
-  modalRef.value.openModal(
-    "Créer un nouvel événement",
-    () => {
-      alert("Création d’un nouvel événement");
-      modalRef.value.closeModal();
-    },
-    "bg-green-500"
-  );
+  alert("Création d’un nouvel événement");
 };
 </script>
 
@@ -97,8 +89,11 @@ const createEvent = () => {
               <button @click="editEvent(event)" class="text-blue-600 hover:underline">
                 <Pencil class="h-4 w-4" />
               </button>
-              <button @click="deleteEvent(event.id)" class="text-red-600 hover:underline">
-                <Trash class="h-4 w-4" />
+              <button
+                @click="openDeleteModal(event)"
+                class="text-red-600 hover:underline"
+              >
+                <Trash />
               </button>
             </td>
           </tr>
@@ -106,6 +101,12 @@ const createEvent = () => {
       </table>
     </div>
 
-  
+   
+    <DeleteEvent
+      v-model:isOpen="isDeleteModalOpen"
+      :event="eventToDelete" 
+      @delete="deleteEvent"
+      @cancel="cancelDelete"
+    />
   </div>
 </template>
