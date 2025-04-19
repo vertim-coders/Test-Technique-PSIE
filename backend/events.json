@@ -1,18 +1,1 @@
-[
-  {
-    "id": 1,
-    "title": "Conf\u00e9rence PHP",
-    "description": "Tout savoir sur PHP en 2025",
-    "date": "2025-05-20",
-    "places_total": 50,
-    "places_booked": 1
-  },
-  {
-    "id": 2,
-    "title": "Atelier Vue.js",
-    "description": "Construire une app dynamique",
-    "date": "2025-05-21",
-    "places_total": 30,
-    "places_booked": 2
-  }
-]
+[{"id":1,"title":"Conf\u00e9rence PHP","description":"Tout savoir sur PHP en 2025","date":"2025-05-20","location":"Cotonou","places_total":50,"places_booked":1},{"id":2,"title":"Atelier Vue.js","description":"Construire une app dynamique","date":"2025-05-21","location":"Abomey-Calavi","places_total":5000,"places_booked":2},{"id":3,"title":"Atelier React","description":"Construire une app dynamique","date":"2025-05-22","location":"Cotonou","places_total":5000,"places_booked":3},{"id":4,"title":"Atelier Angular","description":"Construire une app dynamique","date":"2025-05-23","location":"Cotonou","places_total":5000,"places_booked":4}]

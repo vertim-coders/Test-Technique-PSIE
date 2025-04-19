@@ -1,5 +1,8 @@
 <?php
 header("Content-Type: application/json");
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE, OPTIONS");
+header("Access-Control-Allow-Headers: Content-Type");
 
 $method = $_SERVER['REQUEST_METHOD'];
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
@@ -23,7 +26,9 @@ switch (true) {
         if ($method === 'POST') {
             $data = json_decode(file_get_contents('php://input'), true);
 
-            if (isset($data['name'], $data['date'], $data['location'])) {
+            if (isset($data['title'], $data['description'], $data['date'], $data['location'], $data['places_total'])) {
+                $data['places_booked'] = 0;
+                $data['id'] = count($events) > 0 ? max(array_column($events, 'id')) + 1 : 1;
                 $events[] = $data;
                 file_put_contents("events.json", json_encode($events));
                 echo json_encode(["message" => "Événement ajouté avec succès"]);
@@ -35,45 +40,62 @@ switch (true) {
         break;
 
     case matchRoute('/events/:id', $routeParams):
-        if ($method === 'PUT') {
-            $data = json_decode(file_get_contents('php://input'), true);
-            $id = $routeParams['id'];
-
-            if (isset($events[$id])) {
-                // Only update provided fields (name, date, location)
-                if (isset($data['name'])) {
-                    $events[$id]['name'] = $data['name'];
-                }
-                if (isset($data['date'])) {
-                    $events[$id]['date'] = $data['date'];
-                }
-                if (isset($data['location'])) {
-                    $events[$id]['location'] = $data['location'];
+        $found = null;
+        $id = (int) $routeParams['id'];
+        foreach ($events as $event) {
+            if ($event['id'] === $id) {
+                $found = $event;
+                break;
+            }
+        }
+        if ($found) {
+            if ($method === 'GET') {
+                echo json_encode(["data" => $found]);
+            } elseif ($method === 'PUT') {
+                $data = json_decode(file_get_contents('php://input'), true);
+                foreach ($events as &$event) {
+                    if ($event['id'] === $id) {
+                        if (isset($data['title'])) {
+                            $event['title'] = $data['title'];
+                        }
+                        if (isset($data['description'])) {
+                            $event['description'] = $data['description'];
+                        }
+                        if (isset($data['date'])) {
+                            $event['date'] = $data['date'];
+                        }
+                        if (isset($data['location'])) {
+                            $event['location'] = $data['location'];
+                        }
+                        if (isset($data['places_total'])) {
+                            $event['places_total'] = $data['places_total'];
+                        }
+                        break;
+                    }
                 }
 
                 file_put_contents("events.json", json_encode($events));
                 echo json_encode(["message" => "Événement mis à jour avec succès"]);
-            } else {
-                http_response_code(404);
-                echo json_encode(["error" => "Événement non trouvé"]);
+
+            } elseif ($method === "DELETE") {
+                $key = array_search($id, array_column($events, 'id'));
+                if ($key !== false) {
+                    unset($events[$key]);
+                    file_put_contents("events.json", json_encode(array_values($events)));
+                    echo json_encode(["message" => "Événement supprimé avec succès"]);
+                } else {
+                    http_response_code(404);
+                    echo json_encode(["error" => "Événement non trouvé"]);
+                }
             }
+        } else {
+            http_response_code(404);
+            echo json_encode(["error" => "Événement non trouvé"]);
         }
         break;
 
-    case matchRoute('/events/:id', $routeParams):
-        if ($method === 'DELETE') {
-            $id = $routeParams['id'];
 
-            if (isset($events[$id])) {
-                unset($events[$id]);
-                file_put_contents("events.json", json_encode(array_values($events)));
-                echo json_encode(["message" => "Événement supprimé avec succès"]);
-            } else {
-                http_response_code(404);
-                echo json_encode(["error" => "Événement non trouvé"]);
-            }
-        }
-        break;
+
 
     case matchRoute('/reservations', $routeParams):
         if ($method === 'GET') {
